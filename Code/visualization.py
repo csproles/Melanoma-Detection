@@ -1,12 +1,3 @@
-"""
-visualization.py
-================
-Handles all display and output for the melanoma detection pipeline.
-
-  build_abcd_visuals  — generates annotated images for each ABCD criterion
-  visualize_pipeline  — renders the full 3-row figure and saves to disk
-"""
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,15 +8,7 @@ from MelanomaDeterminingStuff.color import pixelate
 # ABCD VISUALIZATIONS
 # ─────────────────────────────────────────────
 
-def build_abcd_visuals(original: np.ndarray, mask: np.ndarray, abcde: dict) -> dict:
-    """
-    Build annotated images for each ABCD criterion.
-
-    A — centroid dot + flipped mask overlay (green=overlap, red=original only, blue=flip only)
-    B — lesion contour drawn on original (green=regular, red=irregular)
-    C — LAB distance heatmap over the lesion (blue=skin-like, red=very different)
-    D — minimum enclosing circle with diameter label
-    """
+def build_abcd_visuals(original, mask, abcde):
     h, w = original.shape[:2]
     visuals = {}
 
@@ -114,21 +97,15 @@ def build_abcd_visuals(original: np.ndarray, mask: np.ndarray, abcde: dict) -> d
 # ─────────────────────────────────────────────
 
 def visualize_pipeline(
-    original:  np.ndarray,
-    denoised:  np.ndarray,
-    bilateral: np.ndarray,
-    no_hair:   np.ndarray,
-    mask:      np.ndarray,
-    edges:     np.ndarray,
-    abcde:     dict,
-    save_path: str = None,
-) -> None:
-    """
-    Render and display the full 3-row pipeline figure.
-
-    Row 1-2: six pipeline stage images + ABCD report panel
-    Row 3:   four ABCD criterion visualizations
-    """
+    original,
+    denoised,
+    bilateral,
+    no_hair,
+    mask,
+    edges,
+    abcde,
+    save_path=None,
+):
     def bgr2rgb(img):
         return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 

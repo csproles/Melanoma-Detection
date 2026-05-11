@@ -1,12 +1,3 @@
-"""
-ComputerVisionStuff/__init__.py
-================================
-Makes ComputerVisionStuff a Python package and exposes all functions
-so main.py can import them cleanly:
-
-    from ComputerVisionStuff import apply_bilateral_filter, remove_hair, ...
-"""
-
 from ComputerVisionStuff.bilateral_filter import apply_bilateral_filter
 from ComputerVisionStuff.median_filter    import remove_salt_pepper_noise
 from ComputerVisionStuff.hair             import measure_hair_width_px, remove_hair

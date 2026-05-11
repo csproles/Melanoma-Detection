@@ -1,15 +1,3 @@
-"""
-main.py
-=======
-Entry point for the Melanoma Detection Pipeline.
-
-Usage:
-    python main.py <image_path> [output_path]
-
-Example:
-    python main.py Images/Benign/ISIC_0000005.jpg Results/result.png
-"""
-
 import sys
 import cv2
 import numpy as np
@@ -23,8 +11,29 @@ from visualization            import visualize_pipeline
 
 VELLUS_HAIR_UM = 70.0
 
-def run_pipeline(image_path: str, output_path: str = None) -> dict:
-    """Run the full melanoma detection pipeline on a single image."""
+def run_pipeline(image_path, output_path=None):
+
+    print("\n" + "═" * 50)
+    print("  MELANOMA DETECTION PIPELINE")
+    print("═" * 50)
+
+    original                   = load_image(image_path)
+    no_vignette, circle_info   = remove_vignette(original)
+    denoised                   = remove_salt_pepper_noise(no_vignette, kernel_size=3)
+    bilateral                  = apply_bilateral_filter(denoised, diameter=9, sigma_color=75, sigma_space=75)
+    hair_width_px              = measure_hair_width_px(bilateral)
+    mm_per_px                  = (VELLUS_HAIR_UM / hair_width_px) / 1000.0 if hair_width_px else None
+    no_hair                    = remove_hair(bilateral, kernel_size=17, threshold=10)
+    mask, masked               = segment_lesion(no_hair)
+    edges                      = detect_edges(masked, low_threshold=50, high_threshold=150)
+    abcde                      = analyze_abcde(mask, no_hair, circle_info=circle_info, mm_per_px=mm_per_px)
+
+    print("\n" + "─" * 50)
+    print("  ABCD RESULTS")
+    print("─" * 50)
+    for val in abcde.values():
+        print(f"  {val['label']}")
+    print("─" * 50 + "\n")
 
     print("\n" + "═" * 50)
     print("  MELANOMA DETECTION PIPELINE")
