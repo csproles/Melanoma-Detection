@@ -14,6 +14,9 @@ def remove_vignette(img, shrink=0.95):
     largest = max(contours, key=cv2.contourArea)
     (cx, cy), radius = cv2.minEnclosingCircle(largest)
 
+    circle_area = cv2.contourArea(largest)
+    img_area = img.shape[0] * img.shape[1]
+
     if circle_area / img_area < 0.3:
         print("circle too small")
         return img, None
